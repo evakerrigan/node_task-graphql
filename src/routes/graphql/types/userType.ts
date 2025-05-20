@@ -5,10 +5,10 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { UUIDType } from './uuid.js';
 import { IContext, IUser } from './interfaces.js';
-import { ProfileType } from './profileType.js';
 import { PostType } from './postType.js';
+import { ProfileType } from './profileType.js';
+import { UUIDType } from './uuid.js';
 
 export const UserType: GraphQLObjectType<IUser, IContext> = new GraphQLObjectType({
   name: 'User',
@@ -20,35 +20,33 @@ export const UserType: GraphQLObjectType<IUser, IContext> = new GraphQLObjectTyp
     posts: {
       type: new GraphQLList(PostType),
       resolve: async (source, _args: unknown, context: IContext) =>
-        await context.prisma.post.findMany({ where: { authorId: source.id } }),
+        await context.dataLoaders.postsLoader.load(source.id),
     },
 
     profile: {
       type: ProfileType,
       resolve: async (source, _args: unknown, context: IContext) =>
-        await context.prisma.profile.findUnique({ where: { userId: source.id } }),
+        await context.dataLoaders.profileLoader.load(source.id),
     },
 
     userSubscribedTo: {
       type: new GraphQLList(UserType),
-      resolve: async (source, _args, context) =>
-        (
-          await context.prisma.subscribersOnAuthors.findMany({
-            where: { subscriberId: source.id },
-            select: { author: true },
-          })
-        ).map(({ author }) => author),
+      resolve: async (source, _args: unknown, context: IContext) =>
+        source.userSubscribedTo
+          ? context.dataLoaders.userLoader.loadMany(
+              source.userSubscribedTo.map((user) => user.authorId),
+            )
+          : null,
     },
 
     subscribedToUser: {
       type: new GraphQLList(UserType),
       resolve: async (source, _args: unknown, context: IContext) =>
-        (
-          await context.prisma.subscribersOnAuthors.findMany({
-            where: { authorId: source.id },
-            select: { subscriber: true },
-          })
-        ).map(({ subscriber }) => subscriber),
+        source.subscribedToUser
+          ? context.dataLoaders.userLoader.loadMany(
+              source.subscribedToUser.map((user) => user.subscriberId),
+            )
+          : null,
     },
   }),
 });
