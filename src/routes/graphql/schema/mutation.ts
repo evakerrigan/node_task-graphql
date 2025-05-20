@@ -12,7 +12,7 @@ import {
   CreateProfileInputType,
   CreateUserInputType,
 } from '../types/inputTypes.js';
-import { IContext } from '../types/interfaces.js';
+import { Context } from '../types/interfaces.js';
 import { PostType } from '../types/postType.js';
 import { ProfileType } from '../types/profileType.js';
 import { UserType } from '../types/userType.js';
@@ -27,7 +27,7 @@ export const mutation = new GraphQLObjectType({
       resolve: async (
         _source: unknown,
         args: { dto: { name: string; balance: number } },
-        context: IContext,
+        context: Context,
       ) =>
         await context.prisma.user.create({
           data: args.dto,
@@ -43,7 +43,7 @@ export const mutation = new GraphQLObjectType({
       resolve: async (
         _source: unknown,
         args: { id: string; dto: { name: string; balance: number } },
-        context: IContext,
+        context: Context,
       ) =>
         await context.prisma.user.update({
           where: { id: args.id },
@@ -54,7 +54,7 @@ export const mutation = new GraphQLObjectType({
     deleteUser: {
       type: GraphQLBoolean,
       args: { id: { type: new GraphQLNonNull(UUIDType) } },
-      resolve: async (_source: unknown, args: { id: string }, context: IContext) =>
+      resolve: async (_source: unknown, args: { id: string }, context: Context) =>
         !!(await context.prisma.user.delete({ where: { id: args.id } })),
     },
 
@@ -67,7 +67,7 @@ export const mutation = new GraphQLObjectType({
       resolve: async (
         _source: unknown,
         args: { userId: string; authorId: string },
-        context: IContext,
+        context: Context,
       ) => {
         await context.prisma.user.update({
           where: { id: args.userId },
@@ -86,7 +86,7 @@ export const mutation = new GraphQLObjectType({
       resolve: async (
         _source: unknown,
         args: { userId: string; authorId: string },
-        context: IContext,
+        context: Context,
       ) => {
         await context.prisma.subscribersOnAuthors.delete({
           where: {
@@ -103,7 +103,7 @@ export const mutation = new GraphQLObjectType({
       resolve: async (
         _source: unknown,
         args: { dto: { title: string; content: string; authorId: string } },
-        context: IContext,
+        context: Context,
       ) =>
         await context.prisma.post.create({
           data: args.dto,
@@ -119,7 +119,7 @@ export const mutation = new GraphQLObjectType({
       resolve: async (
         _source: unknown,
         args: { id: string; dto: { title: string; content: string } },
-        context: IContext,
+        context: Context,
       ) =>
         await context.prisma.post.update({
           where: { id: args.id },
@@ -130,7 +130,7 @@ export const mutation = new GraphQLObjectType({
     deletePost: {
       type: GraphQLBoolean,
       args: { id: { type: new GraphQLNonNull(UUIDType) } },
-      resolve: async (_source: unknown, args: { id: string }, context: IContext) =>
+      resolve: async (_source: unknown, args: { id: string }, context: Context) =>
         !!(await context.prisma.post.delete({ where: { id: args.id } })),
     },
 
@@ -147,7 +147,7 @@ export const mutation = new GraphQLObjectType({
             yearOfBirth: number;
           };
         },
-        context: IContext,
+        context: Context,
       ) =>
         await context.prisma.profile.create({
           data: args.dto,
@@ -163,7 +163,7 @@ export const mutation = new GraphQLObjectType({
       resolve: async (
         _source: unknown,
         args: { id: string; dto: { isMale: boolean; yearOfBirth: number } },
-        context: IContext,
+        context: Context,
       ) =>
         await context.prisma.profile.update({
           where: { id: args.id },
@@ -174,7 +174,7 @@ export const mutation = new GraphQLObjectType({
     deleteProfile: {
       type: GraphQLBoolean,
       args: { id: { type: new GraphQLNonNull(UUIDType) } },
-      resolve: async (_source: unknown, args: { id: string }, context: IContext) =>
+      resolve: async (_source: unknown, args: { id: string }, context: Context) =>
         !!(await context.prisma.profile.delete({ where: { id: args.id } })),
     },
   }),

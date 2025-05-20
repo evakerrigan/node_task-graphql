@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import DataLoader from 'dataloader';
-import { IProfile } from '../types/interfaces.js';
+import { Profile } from '../types/interfaces.js';
 
 export const profileLoader = (prisma: PrismaClient) => {
   return new DataLoader(async (ids: readonly string[]) => {
-    const profiles: IProfile[] = await prisma.profile.findMany({
+    const profiles: Profile[] = await prisma.profile.findMany({
       where: {
         userId: {
           in: ids as string[],

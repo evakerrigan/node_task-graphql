@@ -1,35 +1,35 @@
 import { PrismaClient } from '@prisma/client';
 import DataLoader from 'dataloader';
 
-export interface IContext {
+export interface Context {
   prisma: PrismaClient;
-  dataLoaders: IDataLoaders;
+  dataLoaders: DataLoaders;
 }
 
-export interface IMemberType {
+export interface MemberType {
   id: string;
   discount: number;
   postsLimitPerMonth: number;
 }
 
-export interface IUser {
+export interface User {
   id: string;
   name: string;
   balance: number;
-  posts?: IPost[];
-  profile?: IProfile;
-  userSubscribedTo?: ISubscriberOnAuthor[];
-  subscribedToUser?: ISubscriberOnAuthor[];
+  posts?: Post[];
+  profile?: Profile;
+  userSubscribedTo?: SubscriberOnAuthor[];
+  subscribedToUser?: SubscriberOnAuthor[];
 }
 
-export interface IPost {
+export interface Post {
   id: string;
   title: string;
   content: string;
   authorId: string;
 }
 
-export interface IProfile {
+export interface Profile {
   id: string;
   isMale: boolean;
   yearOfBirth: number;
@@ -37,14 +37,14 @@ export interface IProfile {
   memberTypeId: string;
 }
 
-export interface ISubscriberOnAuthor {
+export interface SubscriberOnAuthor {
   subscriberId: string;
   authorId: string;
 }
 
-export interface IDataLoaders {
-  userLoader: DataLoader<string, IUser | undefined, string>;
-  postsLoader: DataLoader<string, IPost[] | undefined, string>;
-  profileLoader: DataLoader<string, IProfile | undefined, string>;
-  memberTypeLoader: DataLoader<string, IMemberType | undefined, string>;
+export interface DataLoaders {
+  userLoader: DataLoader<string, User | undefined, string>;
+  postsLoader: DataLoader<string, Post[] | undefined, string>;
+  profileLoader: DataLoader<string, Profile | undefined, string>;
+  memberTypeLoader: DataLoader<string, MemberType | undefined, string>;
 }

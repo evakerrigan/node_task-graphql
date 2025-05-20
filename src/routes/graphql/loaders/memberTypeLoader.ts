@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import DataLoader from 'dataloader';
-import { IMemberType } from '../types/interfaces.js';
+import { MemberType } from '../types/interfaces.js';
 
 export const memberTypeLoader = (prisma: PrismaClient) => {
   return new DataLoader(async (ids: readonly string[]) => {
-    const memberTypes: IMemberType[] = await prisma.memberType.findMany({
+    const memberTypes: MemberType[] = await prisma.memberType.findMany({
       where: {
         id: {
           in: ids as string[],

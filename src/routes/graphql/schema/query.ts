@@ -9,7 +9,7 @@ import {
   parseResolveInfo,
   simplifyParsedResolveInfoFragmentWithType,
 } from 'graphql-parse-resolve-info';
-import { IContext, IUser } from '../types/interfaces.js';
+import { Context, User } from '../types/interfaces.js';
 import { MemberType, MemberTypeId } from '../types/memberTypes.js';
 import { PostType } from '../types/postType.js';
 import { ProfileType } from '../types/profileType.js';
@@ -21,13 +21,13 @@ export const query = new GraphQLObjectType({
   fields: () => ({
     memberTypes: {
       type: new GraphQLList(MemberType),
-      resolve: async (_source: unknown, _args: unknown, context: IContext) =>
+      resolve: async (_source: unknown, _args: unknown, context: Context) =>
         await context.prisma.memberType.findMany(),
     },
 
     posts: {
       type: new GraphQLList(PostType),
-      resolve: async (_source: unknown, _args: unknown, context: IContext) =>
+      resolve: async (_source: unknown, _args: unknown, context: Context) =>
         await context.prisma.post.findMany(),
     },
 
@@ -36,7 +36,7 @@ export const query = new GraphQLObjectType({
       resolve: async (
         _source: unknown,
         _args: unknown,
-        context: IContext,
+        context: Context,
         info: GraphQLResolveInfo,
       ) => {
         const parsedInfo = parseResolveInfo(info);
@@ -50,7 +50,7 @@ export const query = new GraphQLObjectType({
           new GraphQLList(UserType),
         );
 
-        const users: IUser[] = await context.prisma.user.findMany({
+        const users: User[] = await context.prisma.user.findMany({
           include: {
             userSubscribedTo: !!fields.userSubscribedTo,
             subscribedToUser: !!fields.subscribedToUser,
@@ -67,35 +67,35 @@ export const query = new GraphQLObjectType({
 
     profiles: {
       type: new GraphQLList(ProfileType),
-      resolve: async (_source: unknown, _args: unknown, context: IContext) =>
+      resolve: async (_source: unknown, _args: unknown, context: Context) =>
         await context.prisma.profile.findMany(),
     },
 
     memberType: {
       type: MemberType,
       args: { id: { type: new GraphQLNonNull(MemberTypeId) } },
-      resolve: async (_source: unknown, args: { id: string }, context: IContext) =>
+      resolve: async (_source: unknown, args: { id: string }, context: Context) =>
         await context.prisma.memberType.findUnique({ where: { id: args.id } }),
     },
 
     post: {
       type: PostType,
       args: { id: { type: new GraphQLNonNull(UUIDType) } },
-      resolve: async (_source: unknown, args: { id: string }, context: IContext) =>
+      resolve: async (_source: unknown, args: { id: string }, context: Context) =>
         await context.prisma.post.findUnique({ where: { id: args.id } }),
     },
 
     user: {
       type: UserType,
       args: { id: { type: new GraphQLNonNull(UUIDType) } },
-      resolve: async (_source: unknown, args: { id: string }, context: IContext) =>
+      resolve: async (_source: unknown, args: { id: string }, context: Context) =>
         await context.dataLoaders.userLoader.load(args.id),
     },
 
     profile: {
       type: ProfileType,
       args: { id: { type: new GraphQLNonNull(UUIDType) } },
-      resolve: async (_source: unknown, args: { id: string }, context: IContext) =>
+      resolve: async (_source: unknown, args: { id: string }, context: Context) =>
         await context.prisma.profile.findUnique({ where: { id: args.id } }),
     },
   }),
