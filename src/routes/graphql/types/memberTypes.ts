@@ -29,11 +29,11 @@ export const MemberType: GraphQLObjectType<IMemberType, IContext> = new GraphQLO
 export const MemberTypeId = new GraphQLEnumType({
   name: 'MemberTypeId',
   values: {
-    basic: {
-      value: 'basic',
+    BASIC: {
+      value: 'BASIC',
     },
-    business: {
-      value: 'business',
+    BUSINESS: {
+      value: 'BUSINESS',
     },
   },
 });

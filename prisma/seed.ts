@@ -8,8 +8,13 @@ const memberTypes: MemberType[] = [
 ];
 
 for (const memberType of memberTypes) {
-  await prisma.memberType.create({
-    data: memberType,
+  await prisma.memberType.upsert({
+    where: { id: memberType.id },
+    update: {
+      postsLimitPerMonth: memberType.postsLimitPerMonth,
+      discount: memberType.discount,
+    },
+    create: memberType,
   });
 }
 

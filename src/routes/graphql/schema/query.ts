@@ -39,12 +39,6 @@ export const query = new GraphQLObjectType({
         context: IContext,
         info: GraphQLResolveInfo,
       ) => {
-        // const users = await context.prisma.user.findMany({
-        //   include: {
-        //     userSubscribedTo: true,
-        //     subscribedToUser: true,
-        //   },
-        // });
         const parsedInfo = parseResolveInfo(info);
 
         const {
@@ -55,7 +49,6 @@ export const query = new GraphQLObjectType({
           parsedInfo as ResolveTree,
           new GraphQLList(UserType),
         );
-        // console.log('fields', fields);
 
         const users: IUser[] = await context.prisma.user.findMany({
           include: {

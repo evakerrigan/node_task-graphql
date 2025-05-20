@@ -8,6 +8,6 @@ import { userLoader } from './userLoader.js';
 export const getDataLoaders = (prisma: PrismaClient): IDataLoaders => ({
   userLoader: userLoader(prisma),
   postsLoader: postsLoader(prisma),
-  memberTypeLoader: memberTypeLoader(prisma),
   profileLoader: profileLoader(prisma),
+  memberTypeLoader: memberTypeLoader(prisma),
 });

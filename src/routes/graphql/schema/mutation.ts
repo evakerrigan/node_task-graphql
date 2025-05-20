@@ -1,4 +1,9 @@
-import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType } from 'graphql';
+import {
+  GraphQLBoolean,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLString,
+} from 'graphql';
 import {
   ChangePostInputType,
   ChangeProfileInputType,
@@ -54,7 +59,7 @@ export const mutation = new GraphQLObjectType({
     },
 
     subscribeTo: {
-      type: UserType,
+      type: GraphQLString,
       args: {
         userId: { type: new GraphQLNonNull(UUIDType) },
         authorId: { type: new GraphQLNonNull(UUIDType) },
@@ -63,15 +68,17 @@ export const mutation = new GraphQLObjectType({
         _source: unknown,
         args: { userId: string; authorId: string },
         context: IContext,
-      ) =>
+      ) => {
         await context.prisma.user.update({
           where: { id: args.userId },
           data: { userSubscribedTo: { create: { authorId: args.authorId } } },
-        }),
+        });
+        return 'Subscribed successfully';
+      },
     },
 
     unsubscribeFrom: {
-      type: GraphQLBoolean,
+      type: GraphQLString,
       args: {
         userId: { type: new GraphQLNonNull(UUIDType) },
         authorId: { type: new GraphQLNonNull(UUIDType) },
@@ -80,12 +87,14 @@ export const mutation = new GraphQLObjectType({
         _source: unknown,
         args: { userId: string; authorId: string },
         context: IContext,
-      ) =>
-        !!(await context.prisma.subscribersOnAuthors.delete({
+      ) => {
+        await context.prisma.subscribersOnAuthors.delete({
           where: {
             subscriberId_authorId: { subscriberId: args.userId, authorId: args.authorId },
           },
-        })),
+        });
+        return 'Unsubscribed successfully';
+      },
     },
 
     createPost: {
